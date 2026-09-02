@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gloria Gracia Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#8733a6;
+    --navy-deep:#223e89;
+    --paper:#f2ecdf;
+    --paper-alt:#e9e0c8;
+    --line:#c9b98f;
+    --gold:#af8347;
+    --gold-light:#dcc296;
+    --stamp:#9c4038;
+    --sage:#4f6f57;
+    --ink:#241f18;
+    --ink-soft:#5c5646;
+    --radius-lg:26px;
+    --radius-sm:10px;
+    --ease:cubic-bezier(.22,.61,.36,1);
+    --maxw:920px;
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Inter',sans-serif;
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  h1,h2,h3,.display{
+    font-family:'Fraunces',serif;
+    color:var(--navy);
+    margin:0;
+    font-weight:500;
+  }
+  a{color:inherit;}
+  ::selection{background:var(--gold-light);color:var(--navy-deep);}
+
+  /* background texture: dotted corners + soft wave, echoing the original poster */
+  .grain{
+    position:fixed; inset:0; pointer-events:none; z-index:0;
+    background-image:radial-gradient(var(--line) 1px, transparent 1.4px);
+    background-size:22px 22px;
+    opacity:.35;
+    mask-image:radial-gradient(circle at 12% 8%, black 0%, transparent 24%),
+               radial-gradient(circle at 92% 92%, black 0%, transparent 22%);
+    -webkit-mask-image:radial-gradient(circle at 12% 8%, black 0%, transparent 24%),
+               radial-gradient(circle at 92% 92%, black 0%, transparent 22%);
+  }
+  .wave{
+    position:absolute; z-index:0; pointer-events:none;
+  }
+  .wave svg{display:block;width:100%;height:100%;}
+
+  /* progress bar */
+  .progress{
+    position:fixed; top:0; left:0; height:3px; width:0%;
+    background:var(--gold); z-index:100; transition:width .1s linear;
+  }
+
+  /* nav */
+  nav{
+    position:sticky; top:0; z-index:50;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:16px clamp(20px,5vw,64px);
+    background:rgba(242,236,223,.86);
+    backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line);
+  }
+  .brand{
+    display:flex; align-items:center; gap:10px;
+    font-family:'Fraunces',serif; font-size:1.05rem; color:var(--navy);
+  }
+  .brand .mark{
+    width:34px;height:34px;border-radius:50%;
+    background:var(--navy); color:var(--paper);
+    display:flex;align-items:center;justify-content:center;
+    font-size:.72rem; letter-spacing:.04em; font-family:'IBM Plex Mono',monospace; font-weight:600;
+    border:1px solid var(--gold-light);
+  }
+  .navlinks{display:flex;gap:clamp(14px,2.4vw,30px);list-style:none;margin:0;padding:0;}
+  .navlinks a{
+    font-size:.86rem; text-decoration:none; color:var(--ink-soft);
+    position:relative; padding-bottom:4px; transition:color .25s var(--ease);
+  }
+  .navlinks a::after{
+    content:'';position:absolute;left:0;bottom:0;height:1.5px;width:0%;
+    background:var(--gold);transition:width .3s var(--ease);
+  }
+  .navlinks a:hover, .navlinks a.active{color:var(--navy);}
+  .navlinks a:hover::after, .navlinks a.active::after{width:100%;}
+  .navlinks{ }
+  @media (max-width:620px){ .navlinks{gap:12px;} .navlinks a{font-size:.76rem;} }
+
+  section{position:relative;z-index:1;}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 clamp(20px,5vw,40px);}
+
+  /* hero */
+  .hero{
+    padding:clamp(60px,10vw,110px) 0 clamp(40px,7vw,70px);
+    text-align:center;
+  }
+  .photo-ring{
+    width:200px;height:200px;border-radius:50%;margin:0 auto 30px;
+    position:relative;
+    padding:6px;
+    border:1px solid var(--gold-light);
+    opacity:0; transform:scale(.9);
+    animation:ringIn 1s var(--ease) .1s forwards;
+  }
+  .photo-ring .inner{
+    width:100%;height:100%;border-radius:50%;overflow:hidden;
+    background:
+      radial-gradient(circle at 32% 24%, #2c3a5c 0%, transparent 45%),
+      linear-gradient(160deg, var(--navy) 0%, var(--navy-deep) 70%);
+    display:flex;align-items:center;justify-content:center;
+    box-shadow:inset 0 0 40px rgba(0,0,0,.4);
+  }
+  .photo-ring .inner img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    object-position:center 58%;
+}
+  .photo-ring .initials{
+    font-family:'Fraunces',serif; font-size:2.6rem; color:var(--paper);
+    opacity:.85; letter-spacing:.02em;
+  }
+  .photo-note{
+    font-family:'IBM Plex Mono',monospace; font-size:.62rem; letter-spacing:.03em;
+    color:var(--ink-soft); opacity:.55; margin-top:8px;
+  }
+  @keyframes ringIn{to{opacity:1;transform:scale(1);}}
+
+  .hero h1{
+    font-size:clamp(2.6rem,7vw,4.4rem);
+    letter-spacing:-.01em;
+    opacity:0; transform:translateY(14px);
+    animation:riseIn .9s var(--ease) .3s forwards;
+  }
+  .hero .rule{
+    width:120px;height:1px;background:var(--line);margin:20px auto;
+    position:relative;
+    opacity:0; animation:riseIn .9s var(--ease) .5s forwards;
+  }
+  .hero .rule::after{
+    content:'✦'; position:absolute; left:50%; top:50%;
+    transform:translate(-50%,-50%); background:var(--paper);
+    color:var(--gold); padding:0 10px; font-size:.7rem;
+  }
+  .hero .kicker{
+    font-family:'IBM Plex Mono',monospace; font-size:.78rem;
+    letter-spacing:.14em; color:var(--navy); text-transform:uppercase;
+    opacity:0; animation:riseIn .9s var(--ease) .65s forwards;
+  }
+  .hero .tagline{
+    max-width:480px;margin:22px auto 0; color:var(--ink-soft); font-size:1rem;
+    opacity:0; animation:riseIn .9s var(--ease) .8s forwards;
+  }
+  @keyframes riseIn{to{opacity:1;transform:translateY(0);}}
+
+  .scrollcue{
+    margin:44px auto 0; width:22px;height:34px;border:1.5px solid var(--ink-soft);
+    border-radius:12px; position:relative; opacity:.5;
+  }
+  .scrollcue::before{
+    content:'';position:absolute;top:6px;left:50%;width:3px;height:7px;
+    background:var(--ink-soft);border-radius:2px;transform:translateX(-50%);
+    animation:cue 1.8s ease-in-out infinite;
+  }
+  @keyframes cue{0%{opacity:1;top:6px;}70%{opacity:0;top:16px;}100%{opacity:0;top:6px;}}
+
+  /* section heading pill, from the original design language */
+  .pill-head{
+    display:inline-flex; align-items:center; gap:12px;
+    background:var(--navy); color:var(--paper);
+    padding:9px 22px 9px 10px; border-radius:999px;
+    font-family:'IBM Plex Mono',monospace; font-size:.72rem;
+    letter-spacing:.12em; text-transform:uppercase;
+  }
+  .pill-head .icon{
+    width:26px;height:26px;border-radius:50%;background:var(--paper);
+    display:flex;align-items:center;justify-content:center;font-size:.85rem;
+  }
+  .section-head{
+    display:flex; align-items:center; gap:18px; margin-bottom:34px;
+  }
+  .section-head .fill{flex:1;height:1px;background:var(--line);}
+
+  section.block{padding:56px 0;}
+  section.block + section.block{border-top:1px solid var(--line);}
+
+  /* about */
+  .about-grid{display:grid;grid-template-columns:1.3fr 1fr;gap:40px;align-items:start;}
+  @media (max-width:700px){.about-grid{grid-template-columns:1fr;}}
+  .about-text p{color:var(--ink-soft); font-size:1rem;}
+  .edu-card{
+    background:var(--paper-alt); border:1px solid var(--line); border-radius:var(--radius-lg);
+    padding:26px 24px;
+  }
+  .edu-card .role{font-family:'Fraunces',serif;font-size:1.15rem;color:var(--navy);margin-bottom:4px;}
+  .edu-card .org{font-style:italic;color:var(--ink);margin-bottom:2px;}
+  .edu-card .loc{font-size:.85rem;color:var(--ink-soft);display:flex;gap:6px;align-items:center;}
+  .edu-card .stampline{margin-top:16px;padding-top:16px;border-top:1px dashed var(--line);
+    font-family:'IBM Plex Mono',monospace;font-size:.68rem;letter-spacing:.05em;color:var(--ink-soft);}
+
+  /* skills */
+  .skill-groups{display:flex;flex-direction:column;gap:34px;}
+  .skill-group h3{
+    font-size:.95rem; font-family:'IBM Plex Mono',monospace; text-transform:uppercase;
+    letter-spacing:.08em; color:var(--sage); margin-bottom:14px; font-weight:600;
+  }
+  .skill-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;}
+  .stamp-btn{
+    all:unset; cursor:pointer; display:block;
+    border:1.5px solid var(--line); border-radius:var(--radius-sm);
+    padding:14px 14px 12px; background:var(--paper);
+    transition:border-color .25s var(--ease), transform .25s var(--ease), box-shadow .25s var(--ease);
+  }
+  .stamp-btn:hover{border-color:var(--gold); transform:translateY(-2px);}
+  .stamp-btn:focus-visible{outline:2px solid var(--navy); outline-offset:2px;}
+  .stamp-btn.open{border-color:var(--navy); box-shadow:0 6px 18px -10px rgba(24,38,68,.35);}
+  .stamp-top{display:flex;align-items:center;justify-content:space-between;gap:8px;}
+  .stamp-code{
+    font-family:'IBM Plex Mono',monospace; font-weight:600; font-size:.78rem;
+    color:var(--navy); letter-spacing:.03em;
+  }
+  .chev{
+    width:16px;height:16px;flex:0 0 auto;color:var(--ink-soft);
+    transition:transform .3s var(--ease);
+  }
+  .stamp-btn.open .chev{transform:rotate(180deg); color:var(--navy);}
+  .stamp-name{display:block;margin-top:6px;font-size:.92rem;color:var(--ink);}
+  .stamp-detail{
+    display:grid; grid-template-rows:0fr; transition:grid-template-rows .4s var(--ease);
+  }
+  .stamp-detail > div{overflow:hidden;}
+  .stamp-btn.open .stamp-detail{grid-template-rows:1fr;}
+  .stamp-detail p{
+    margin:12px 0 0; padding-top:12px; border-top:1px dashed var(--line);
+    font-size:.84rem; color:var(--ink-soft); line-height:1.5;
+  }
+
+  /* hobbies */
+  .hobby-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
+  @media (max-width:680px){.hobby-grid{grid-template-columns:repeat(2,1fr);}}
+  .hobby-card{
+    border:1.5px solid var(--line); border-radius:var(--radius-sm);
+    background:var(--paper); padding:20px 16px; cursor:pointer;
+    text-align:center; transition:border-color .25s var(--ease), transform .25s var(--ease);
+  }
+  .hobby-card:hover{transform:translateY(-3px); border-color:var(--gold);}
+  .hobby-card.open{border-color:var(--navy);}
+  .hobby-icon{font-size:1.6rem;margin-bottom:8px;display:block;}
+  .hobby-label{font-size:.86rem;color:var(--ink);}
+
+  .hobby-panel{
+    display:grid; grid-template-rows:0fr; transition:grid-template-rows .45s var(--ease);
+    margin-top:20px;
+  }
+  .hobby-panel > div{overflow:hidden;}
+  .hobby-panel.open{grid-template-rows:1fr;}
+  .hobby-panel-inner{
+    border:1px solid var(--line); border-radius:var(--radius-lg);
+    background:var(--paper-alt); padding:26px;
+  }
+  .hobby-panel-inner p.simple{color:var(--ink-soft); font-size:.95rem;}
+
+  /* travel explorer */
+  .region-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px;}
+  .region-tab{
+    all:unset; cursor:pointer; font-family:'IBM Plex Mono',monospace; font-size:.7rem;
+    letter-spacing:.06em; text-transform:uppercase; padding:8px 14px;
+    border:1px solid var(--line); border-radius:999px; color:var(--ink-soft);
+    transition:all .25s var(--ease);
+  }
+  .region-tab:hover{border-color:var(--gold);}
+  .region-tab.active{background:var(--navy); color:var(--paper); border-color:var(--navy);}
+
+  .country-grid{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px;}
+  .country-chip{
+    all:unset; cursor:pointer; font-size:.82rem; padding:7px 13px;
+    border:1px solid var(--line); border-radius:999px; background:var(--paper);
+    display:inline-flex; align-items:center; gap:6px;
+    transition:all .22s var(--ease);
+  }
+  .country-chip:hover{border-color:var(--stamp);}
+  .country-chip.active{
+    background:var(--stamp); color:var(--paper); border-color:var(--stamp);
+  }
+
+  .fact-card{
+    border:1.5px solid var(--stamp); border-radius:var(--radius-sm);
+    padding:18px 20px; background:var(--paper);
+    position:relative;
+    transform:rotate(-1deg) scale(.96); opacity:0;
+    transition:transform .35s var(--ease), opacity .35s var(--ease);
+  }
+  .fact-card.show{transform:rotate(-1deg) scale(1); opacity:1;}
+  .fact-card::before{
+    content:'VISITED · WISHLIST';
+    position:absolute; top:10px; right:14px;
+    font-family:'IBM Plex Mono',monospace; font-size:.55rem; letter-spacing:.08em;
+    color:var(--stamp); opacity:.5;
+  }
+  .fact-card h4{
+    font-family:'Fraunces',serif; color:var(--stamp); font-size:1.1rem; margin:0 0 6px;
+  }
+  .fact-card p{margin:0; color:var(--ink-soft); font-size:.88rem;}
+  .fact-empty{color:var(--ink-soft); font-size:.85rem; font-style:italic;}
+
+  /* footer */
+  footer{
+    padding:50px 0 70px; text-align:center;
+  }
+  footer .rule{width:60px;height:1px;background:var(--line);margin:0 auto 20px;}
+  footer p{color:var(--ink-soft); font-size:.85rem; margin:4px 0;}
+  footer a.gh{
+    display:inline-flex; align-items:center; gap:8px; margin-top:14px;
+    text-decoration:none; color:var(--navy); font-family:'IBM Plex Mono',monospace;
+    font-size:.8rem; border:1px solid var(--line); padding:9px 18px; border-radius:999px;
+    transition:all .25s var(--ease);
+  }
+  footer a.gh:hover{border-color:var(--gold); background:var(--paper-alt);}
+
+  /* scroll reveal */
+  .reveal{opacity:0; transform:translateY(20px); transition:opacity .7s var(--ease), transform .7s var(--ease);}
+  .reveal.in{opacity:1; transform:translateY(0);}
+
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:.01ms !important; transition-duration:.01ms !important;}
+    html{scroll-behavior:auto;}
+  }
+</style>
+</head>
+<body>
+
+<div class="grain"></div>
+<div class="progress" id="progress"></div>
+
+<nav>
+  <div class="brand"><span class="mark">GG</span> Gloria Gracia</div>
+  <ul class="navlinks">
+    <li><a href="#about" data-nav>About</a></li>
+    <li><a href="#skills" data-nav>Skills</a></li>
+    <li><a href="#hobbies" data-nav>Travel &amp; Hobbies</a></li>
+    <li><a href="#contact" data-nav>Contact</a></li>
+  </ul>
+</nav>
+
+<header class="hero">
+  <div class="wrap">
+   <div class="photo-ring">
+  <div class="inner"><img src="images/profile.png" alt="Gloria Gracia"></div>
+</div>
+    <p class="kicker">Computer Science</p>
+    <h1>Gloria Gracia</h1>
+    <div class="rule"></div>
+    <p class="tagline">Bachelor of Computer Science student, building with data, code and a running list of places worth seeing.</p>
+    <div class="scrollcue"></div>
+  </div>
+</header>
+
+<section class="block" id="about">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="pill-head"><span class="icon">🎓</span>Education</span>
+      <div class="fill"></div>
+    </div>
+    <div class="about-grid reveal">
+      <div class="about-text">
+        <p>Computer Science student whose coursework moves across deep learning, Machine Learning, data science, cloud computing and IoT ,  and this site doubles as a running record of the tools she uses to get that work done.</p>
+      </div>
+      <div class="edu-card">
+        <div class="role">Bachelor of Computer Science</div>
+        <div class="org">University of Groningen</div>
+        <div class="loc">📍 Groningen, Netherlands</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="block" id="skills">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="pill-head"><span class="icon">⚙️</span>Skills</span>
+      <div class="fill"></div>
+    </div>
+    <p class="reveal" style="color:var(--ink-soft);font-size:.9rem;margin:-14px 0 28px;">Click a skill to see how she actually uses it.</p>
+    <div class="skill-groups" id="skillGroups"></div>
+  </div>
+</section>
+
+<section class="block" id="hobbies">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="pill-head"><span class="icon">♡</span>Hobbies</span>
+      <div class="fill"></div>
+    </div>
+    <div class="hobby-grid reveal" id="hobbyGrid"></div>
+    <div class="hobby-panel" id="hobbyPanel"><div><div class="hobby-panel-inner" id="hobbyPanelInner"></div></div></div>
+  </div>
+</section>
+
+<footer id="contact">
+  <div class="wrap">
+    <div class="rule"></div>
+    <p>Gloria Gracia · Computer Science</p>
+    <p style="font-size:.75rem;opacity:.7;">Built with HTML, CSS &amp; JavaScript — no frameworks.</p>
+    <a class="gh" href="https://github.com/" target="_blank" rel="noopener">↳ gloriadeo18.github.io </a>
+  </div>
+</footer>
+
+<script>
+/* ---------- DATA ---------- */
+const skillData = [
+  { group: "Languages & Development", items: [
+    { code:"PY", name:"Python", text:"Main language for data science and deep learning work  cleaning datasets, building models, and automating small research tasks." },
+    { code:"HTML", name:"HTML", text:"Structures every web page and interactive project she builds, this portfolio included the semantic backbone that everything else sits on." },
+    { code:"CSS", name:"CSS", text:"Handles layout, spacing and responsive styling, turning plain HTML into something that actually looks designed." },
+    { code:"JS", name:"JavaScript", text:"Adds the interactivity  click‑to‑expand sections, animations, and logic that makes a static page feel like an app." },
+    { code:"PHP", name:"PHP", text:"Used for server‑side logic on dynamic, database‑driven sites where content needs to change per request." },
+  ]},
+  { group: "Data & Computation", items: [
+    { code:"DA", name:"Data Analysis", text:"Comfortable exploring raw datasets, spotting patterns, and turning numbers into findings that support a research question." },
+    { code:"TBL", name:"Tableau", text:"Turns processed data into clear, interactive dashboards  the visual layer for data science and decision‑support coursework." },
+    { code:"MAT", name:"MATLAB", text:"Used for simulation and computation, including fuzzy inference systems built for IoT and decision‑support projects." },
+    { code:"FL", name:"Fuzzy Logic", text:"Applies fuzzy inference systems to model decisions that don't reduce neatly to true or false." },
+    { code:"XLS", name:"Excel", text:"Quick spreadsheets, models and data summaries for coursework, reports and lab data." },
+  ]},
+  { group: "Tools & Workflow", items: [
+    { code:"VSC", name:"VS Code", text:"Her day‑to‑day code editor across languages, from Python notebooks to web projects." },
+    { code:"GIT", name:"GitHub", text:"Manages version control with confidence commits, pushes, branches and pull requests, both solo and in group projects like this one." },
+    { code:"DOC", name:"Word", text:"Writes and formats academic papers, lab reports and research documentation for coursework." },
+    { code:"PPT", name:"PowerPoint", text:"Designs the slide decks used for project defenses and in‑class presentations." },
+  ]},
+];
+
+const travelData = {
+  "Europe": [
+    { name:"France", flag:"🇫🇷", text:"Capital Paris  home to the Louvre and a café culture built for slow afternoons." },
+    { name:"Austria", flag:"🇦🇹", text:"Capital Vienna grand imperial palaces and a deep classical music tradition." },
+    { name:"Belgium", flag:"🇧🇪", text:"Capital Brussels medieval town squares, comic‑strip murals, and famous waffles." },
+    { name:"Germany", flag:"🇩🇪", text:"Capital Berlin  centuries‑old cathedrals sitting beside modern tech and design hubs." },
+    { name:"Czech Republic", flag:"🇨🇿", text:"Capital Prague  the 'City of a Hundred Spires,' with a near‑fairy‑tale skyline." },
+    { name:"Poland", flag:"🇵🇱", text:"Capital Warsaw  a city rebuilt from ruins into a living record of its own history." },
+    { name:"Croatia", flag:"🇭🇷", text:"Known for the Adriatic coastline and the walled old city of Dubrovnik." },
+    { name:"Greece", flag:"🇬🇷", text:"Capital Athens  birthplace of democracy, home to the Acropolis." },
+  ],
+  "Middle East": [
+    { name:"Israel", flag:"🇮🇱", text:"Jerusalem is sacred ground for three major world religions." },
+    { name:"Palestine", flag:"🇵🇸", text:"Home to some of the world's oldest continuously inhabited towns, including Bethlehem and Hebron." },
+    { name:"Iran", flag:"🇮🇷", text:"Capital Tehran  home to Persepolis, once one of the ancient world's great capitals." },
+    { name:"Iraq", flag:"🇮🇶", text:"Capital Baghdad  part of ancient Mesopotamia, often called the cradle of writing." },
+    { name:"Morocco", flag:"🇲🇦", text:"Capital Rabat known for the maze‑like medinas of Fez and Marrakech." },
+  ],
+  "Asia & Pacific": [
+    { name:"Indonesia", flag:"🇮🇩", text:"Her home country an archipelago of more than 17,000 islands." },
+    { name:"Australia", flag:"🇦🇺", text:"Capital Canberra  known for the Great Barrier Reef and the Sydney Opera House." },
+    { name:"Thailand", flag:"🇹🇭", text:"Capital Bangkok golden temples and some of the best street food anywhere." },
+    { name:"Singapore", flag:"🇸🇬", text:"A compact city state known for Gardens by the Bay and its skyline." },
+    { name:"Malaysia", flag:"🇲🇾", text:"Capital Kuala Lumpur  home to the twin‑towered Petronas skyline." },
+    { name:"Mongolia", flag:"🇲🇳", text:"Capital Ulaanbaatar  land of the Gobi Desert and vast open steppe." },
+    { name:"China", flag:"🇨🇳", text:"Capital Beijing  home to the Great Wall and a history spanning millennia." },
+    { name:"Japan", flag:"🇯🇵", text:"Capital Tokyo  centuries‑old temples sitting beside neon‑lit skylines." },
+    { name:"New Zealand", flag:"🇳🇿", text:"Capital Wellington  dramatic fjords and a strong living Māori culture." },
+  ],
+};
+
+const simpleHobbies = {
+  Reading: "A steady reader who keeps a book going between semesters usually the first thing to get picked back up during a break from coursework.",
+  Dancing: "Dances to unwind and stay energetic outside of lectures and lab work.",
+  Singing: "Sings for fun a favorite way to de‑stress after a long week of code and deadlines.",
+};
+
+/* ---------- RENDER SKILLS ---------- */
+const skillGroupsEl = document.getElementById('skillGroups');
+skillData.forEach(group=>{
+  const g = document.createElement('div');
+  g.className = 'skill-group';
+  g.innerHTML = `<h3>${group.group}</h3><div class="skill-grid"></div>`;
+  const grid = g.querySelector('.skill-grid');
+  group.items.forEach(item=>{
+    const btn = document.createElement('button');
+    btn.className = 'stamp-btn';
+    btn.innerHTML = `
+      <div class="stamp-top">
+        <span class="stamp-code">${item.code}</span>
+        <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+      </div>
+      <span class="stamp-name">${item.name}</span>
+      <div class="stamp-detail"><div><p>${item.text}</p></div></div>
+    `;
+    btn.addEventListener('click', ()=>{
+      const wasOpen = btn.classList.contains('open');
+      grid.querySelectorAll('.stamp-btn.open').forEach(b=>b.classList.remove('open'));
+      if(!wasOpen) btn.classList.add('open');
+    });
+    grid.appendChild(btn);
+  });
+  skillGroupsEl.appendChild(g);
+});
+
+/* ---------- RENDER HOBBIES ---------- */
+const hobbyIcons = { Traveling:"✈️", Reading:"📖", Dancing:"💃", Singing:"🎤" };
+const hobbyGrid = document.getElementById('hobbyGrid');
+const hobbyPanel = document.getElementById('hobbyPanel');
+const hobbyPanelInner = document.getElementById('hobbyPanelInner');
+let activeHobby = null;
+
+function buildTravelPanel(){
+  const regions = Object.keys(travelData);
+  let html = `
+    <div class="region-tabs" id="regionTabs"></div>
+    <div class="country-grid" id="countryGrid"></div>
+    <div id="factSlot"><p class="fact-empty">Pick a country to see a quick note about it.</p></div>
+  `;
+  hobbyPanelInner.innerHTML = html;
+
+  const tabsEl = document.getElementById('regionTabs');
+  const gridEl = document.getElementById('countryGrid');
+  const factSlot = document.getElementById('factSlot');
+
+  function renderCountries(region){
+    gridEl.innerHTML = '';
+    travelData[region].forEach(c=>{
+      const chip = document.createElement('button');
+      chip.className = 'country-chip';
+      chip.innerHTML = `${c.flag} ${c.name}`;
+      chip.addEventListener('click', ()=>{
+        gridEl.querySelectorAll('.country-chip').forEach(x=>x.classList.remove('active'));
+        chip.classList.add('active');
+        factSlot.innerHTML = `<div class="fact-card"><h4>${c.flag} ${c.name}</h4><p>${c.text}</p></div>`;
+        requestAnimationFrame(()=> factSlot.querySelector('.fact-card').classList.add('show'));
+      });
+      gridEl.appendChild(chip);
+    });
+  }
+
+  regions.forEach((region,i)=>{
+    const tab = document.createElement('button');
+    tab.className = 'region-tab' + (i===0 ? ' active':'');
+    tab.textContent = region;
+    tab.addEventListener('click', ()=>{
+      tabsEl.querySelectorAll('.region-tab').forEach(t=>t.classList.remove('active'));
+      tab.classList.add('active');
+      factSlot.innerHTML = '<p class="fact-empty">Pick a country to see a quick note about it.</p>';
+      renderCountries(region);
+    });
+    tabsEl.appendChild(tab);
+  });
+  renderCountries(regions[0]);
+}
+
+Object.keys(hobbyIcons).forEach(label=>{
+  const card = document.createElement('div');
+  card.className = 'hobby-card';
+  card.innerHTML = `<span class="hobby-icon">${hobbyIcons[label]}</span><span class="hobby-label">${label}</span>`;
+  card.addEventListener('click', ()=>{
+    const isSame = activeHobby === label;
+    document.querySelectorAll('.hobby-card').forEach(c=>c.classList.remove('open'));
+    if(isSame){
+      activeHobby = null;
+      hobbyPanel.classList.remove('open');
+      return;
+    }
+    activeHobby = label;
+    card.classList.add('open');
+    if(label === 'Traveling'){
+      buildTravelPanel();
+    } else {
+      hobbyPanelInner.innerHTML = `<p class="simple">${simpleHobbies[label]}</p>`;
+    }
+    hobbyPanel.classList.add('open');
+  });
+  hobbyGrid.appendChild(card);
+});
+
+/* ---------- SCROLL PROGRESS + NAV ACTIVE STATE ---------- */
+const progress = document.getElementById('progress');
+window.addEventListener('scroll', ()=>{
+  const h = document.documentElement;
+  const pct = (h.scrollTop) / (h.scrollHeight - h.clientHeight) * 100;
+  progress.style.width = pct + '%';
+}, { passive:true });
+
+const navLinks = document.querySelectorAll('[data-nav]');
+const sections = ['about','skills','hobbies','contact'].map(id=>document.getElementById(id));
+const io = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      navLinks.forEach(l=>l.classList.remove('active'));
+      const link = document.querySelector(`[data-nav][href="#${e.target.id}"]`);
+      if(link) link.classList.add('active');
+    }
+  });
+}, { rootMargin:'-45% 0px -45% 0px' });
+sections.forEach(s=> s && io.observe(s));
+
+/* ---------- REVEAL ON SCROLL ---------- */
+document.querySelectorAll('.reveal').forEach(el=>{
+  const obs = new IntersectionObserver(([entry])=>{
+    if(entry.isIntersecting){ el.classList.add('in'); obs.disconnect(); }
+  }, { threshold:.15 });
+  obs.observe(el);
+});
+</script>
+
+</body>
+</html>
