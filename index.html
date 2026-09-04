@@ -9,7 +9,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
 <style>
   :root{
-    --navy:#0060cd;
+    --navy:#272a61;
     --navy-deep:#223e89;
     --paper:#f2ecdf;
     --paper-alt:#e9e0c8;
@@ -30,7 +30,9 @@
   html{scroll-behavior:smooth;}
   body{
     margin:0;
-    background:var(--paper);    font-family:'Inter',sans-serif;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Inter',sans-serif;
     line-height:1.55;
     -webkit-font-smoothing:antialiased;
     overflow-x:hidden;
@@ -114,12 +116,12 @@
     padding:6px;
     border:1px solid var(--gold-light);
     opacity:0; transform:scale(.9);
-    animation:ringIn 1s var(--ease) .1s forwards, float 4s ease-in-out infinite 1.1s;
+    animation:ringIn 1s var(--ease) .1s forwards;
   }
   .photo-ring .inner{
     width:100%;height:100%;border-radius:50%;overflow:hidden;
     background:
-      radial-gradient(circle at 32% 24%, #2c3a5c 0%, transparent 45%),
+      radial-gradient(circle at 32% 24%, #27375f 0%, transparent 45%),
       linear-gradient(160deg, var(--navy) 0%, var(--navy-deep) 70%);
     display:flex;align-items:center;justify-content:center;
     box-shadow:inset 0 0 40px rgba(0,0,0,.4);
@@ -259,8 +261,8 @@
   }
   .hobby-card:hover{transform:translateY(-3px); border-color:var(--gold);}
   .hobby-card.open{border-color:var(--navy);}
-  .hobby-icon{font-size:1.6rem;margin-bottom:8px;display:block;}
-  .hobby-label{font-size:.86rem;color:var(--ink);}
+.hobby-icon{font-size:1.6rem;margin-bottom:8px;display:block;}
+.hobby-icon img{width:32px;height:32px;object-fit:contain;margin:0 auto;display:block;}  .hobby-label{font-size:.86rem;color:var(--ink);}
 
   .hobby-panel{
     display:grid; grid-template-rows:0fr; transition:grid-template-rows .45s var(--ease);
@@ -347,6 +349,7 @@
 <div class="progress" id="progress"></div>
 
 <nav>
+  <div class="brand"><span class="mark">GG</span> Gloria Gracia</div>
   <ul class="navlinks">
     <li><a href="#about" data-nav>About</a></li>
     <li><a href="#skills" data-nav>Skills</a></li>
@@ -455,6 +458,8 @@ const travelData = {
     { name:"Greece", flag:"🇬🇷", text:"Capital Athens  birthplace of democracy, home to the Acropolis." },
     { name:"Switzerland", flag:"🇨🇭", text:"Capital Bern , Alpine peaks, precision and postcard-perfect lakes" },
     { name:"Bosnia", flag:"🇧🇦", text:"Capital Sarajevo , Where east meets west street corner " },
+
+
   ],
   "Middle East": [
     { name:"Israel", flag:"🇮🇱", text:"Jerusalem is sacred ground for three major world religions." },
@@ -511,7 +516,13 @@ skillData.forEach(group=>{
 });
 
 /* ---------- RENDER HOBBIES ---------- */
-const hobbyIcons = { Traveling:"✈️", Reading:"📖", Dancing:"💃", Singing:"🎤" };
+/* ---------- RENDER HOBBIES ---------- */
+const hobbyIcons = {
+  Traveling: "images/Traveling.png",
+  Reading: "images/Reading.png",
+  Dancing: "images/Dancing.png",
+  Singing: "images/Singing.png"
+};
 const hobbyGrid = document.getElementById('hobbyGrid');
 const hobbyPanel = document.getElementById('hobbyPanel');
 const hobbyPanelInner = document.getElementById('hobbyPanelInner');
@@ -564,7 +575,7 @@ function buildTravelPanel(){
 Object.keys(hobbyIcons).forEach(label=>{
   const card = document.createElement('div');
   card.className = 'hobby-card';
-  card.innerHTML = `<span class="hobby-icon">${hobbyIcons[label]}</span><span class="hobby-label">${label}</span>`;
+  card.innerHTML = `<span class="hobby-icon"><img src="${hobbyIcons[label]}" alt="${label}"></span><span class="hobby-label">${label}</span>`;
   card.addEventListener('click', ()=>{
     const isSame = activeHobby === label;
     document.querySelectorAll('.hobby-card').forEach(c=>c.classList.remove('open'));
